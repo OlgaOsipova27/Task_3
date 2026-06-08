@@ -27,6 +27,8 @@ class MainLocators:
     ORDER_BUTTON = (By.XPATH,"//button[normalize-space()='Оформить заказ']")
     ORDER_MODAL = (By.XPATH,"//section[contains(@class,'Modal_modal_opened')]")
     ORDER_NUMBER = (By.XPATH,"//h2[contains(@class,'Modal_modal__title_shadow')]")
+    CLOSE_MODAL_BUTTON = (By.XPATH, "//button[@class='Modal_modal__close_modified__3V5XS Modal_modal__close__TnseK']")
+    BUN_COUNTER = (By.CSS_SELECTOR, "p.counter_counter__num__3nue1")
 
 
 class PasswordRecoveryLocators:

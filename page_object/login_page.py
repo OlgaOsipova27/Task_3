@@ -8,6 +8,8 @@ from locators.login_page_locators import LoginLocators
 
 
 class LoginPage(BasePage):
+    def __init__(self, driver):
+        super().__init__(driver)
 
     @allure.step('Открыть страницу логина')
     def open_login_page(self):

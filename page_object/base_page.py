@@ -2,20 +2,32 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
  
+from data.url import URL_BURGER_MAIN
+from locators.main_page_locators import MainLocators
+
  
 class BasePage:
     def __init__(self, browser):
         self.driver = browser
+
+    def open_main_page(self):
+        self.driver.get(URL_BURGER_MAIN)
  
-    def wait_for_element(self, locator, timeout=10):
+    def wait_for_element(self, locator, timeout=100):
         return WebDriverWait(self.driver, timeout).until(
             EC.element_to_be_clickable(locator)
         )
  
+    def open(self):
+        self.driver.get(URL_BURGER_MAIN)
+        self.wait_for_visible_element(MainLocators.LOGO_SVG)
+
     def wait_for_visible_element(self, locator, timeout=10):
+  
         return WebDriverWait(self.driver, timeout).until(
             EC.visibility_of_element_located(locator)
         )
+
  
     def wait_for_invisible_element(self, locator, timeout=10):
         return WebDriverWait(self.driver, timeout).until(

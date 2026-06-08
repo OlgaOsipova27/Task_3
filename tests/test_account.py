@@ -1,88 +1,52 @@
 import allure
 import pytest
-from selenium import webdriver
-from selenium.webdriver.support.ui import WebDriverWait
 
-from page_object.base_page import BasePage
+from page_object.main_page import MainPage
+from page_object.profile_page import ProfilePage
+from page_object.user_page import UserPage 
 from page_object.login_page import LoginPage
-from page_object.register_page import RegisterPage
-from data.url import URL_BURGER_MAIN
-from data.user_data import generate_user_data
-
-from locators.main_page_locators import MainLocators
-from locators.profile_page_locators import ProfileLocators
 
 
 class TestPersonalAccount:
 
-    @pytest.fixture(params=["chrome", "firefox"], autouse=True)
-    def setup_browser(self, request):
-        browser_name = request.param
-
-        if browser_name == "chrome":
-            self.driver = webdriver.Chrome()
-        elif browser_name == "firefox":
-            self.driver = webdriver.Firefox()
-
-        self.wait = WebDriverWait(self.driver, 10)
-        self.user_data = generate_user_data()
-
-        yield
-
-        self.driver.quit()
-
-    def register_and_login_user(self):
-        register_page = RegisterPage(self.driver)
-        login_page = LoginPage(self.driver)
-
-        register_page.register(
-            self.user_data["name"],
-            self.user_data["email"],
-            self.user_data["password"]
-        )
-
-        login_page.submit_login(
-            self.user_data["email"],
-            self.user_data["password"]
-        )
+    @pytest.fixture(autouse=True)
+    def setup_pages(self, driver):
+        self.main_page = MainPage(driver)
+        self.profile_page = ProfilePage(driver)
+        self.user_page = UserPage(driver)
+        self.login_page = LoginPage(driver)
 
     @allure.title('Переход по клику на "Личный кабинет"')
     def test_click_personal_account_opens_profile(self):
-        self.driver.get(URL_BURGER_MAIN)
-        base_page = BasePage(self.driver)
-
-        base_page.wait_for_element(MainLocators.LOGO_SVG)
-        self.register_and_login_user()
-
-        base_page.click_element(MainLocators.PERSONAL_ACCOUNT_LINK)
-
-        assert "account" in self.driver.current_url
+        self.main_page.open()
+        user_data = self.user_page.get_test_user_data()
+        self.login_page.login(user_data["email"],
+        user_data["password"])
+        self.profile_page.open_from_main_page()
+        assert self.profile_page.is_profile_page()
 
     @allure.title('Переход в раздел "История заказов"')
     def test_click_order_history_opens_history_page(self):
-        self.driver.get(URL_BURGER_MAIN)
-        base_page = BasePage(self.driver)
-
-        base_page.wait_for_element(MainLocators.LOGO_SVG)
-        self.register_and_login_user()
-
-        base_page.click_element(MainLocators.PERSONAL_ACCOUNT_LINK)
-        base_page.wait_for_visible_element(ProfileLocators.ORDER_HISTORY_LINK)
-        base_page.click_element(ProfileLocators.ORDER_HISTORY_LINK)
-
-        assert "order-history" in self.driver.current_url
+        self.main_page.open()
+        user_data = self.user_page.get_test_user_data()
+        self.login_page.login(user_data["email"],
+        user_data["password"])
+        
+        self.main_page.open()
+        self.profile_page.open_from_main_page()
+        self.profile_page.go_to_order_history()
+        
+        assert self.profile_page.is_order_history_page()
 
     @allure.title('Выход из аккаунта')
     def test_logout_from_account(self):
-        self.driver.get(URL_BURGER_MAIN)
-        base_page = BasePage(self.driver)
-
-        base_page.wait_for_element(MainLocators.LOGO_SVG)
-        self.register_and_login_user()
-
-        base_page.click_element(MainLocators.PERSONAL_ACCOUNT_LINK)
-        base_page.wait_for_visible_element(ProfileLocators.LOGOUT_BUTTON)
-        base_page.click_element(ProfileLocators.LOGOUT_BUTTON)
-        base_page.wait_for_element(MainLocators.LOGIN_HEADER)
-
-        assert "login" in self.driver.current_url
+        self.main_page.open()
+        user_data = self.user_page.get_test_user_data()
+        self.login_page.login(user_data["email"],
+        user_data["password"])
+        
+        self.main_page.open()
+        self.profile_page.open_from_main_page()
+        self.profile_page.logout()
+        
+        assert self.profile_page.is_login_page()

@@ -3,7 +3,6 @@ import allure
 from page_object.base_page import BasePage
 from locators.main_page_locators import MainLocators
 from locators.register_page_locators import RegisterLocators
-from locators.login_page_locators import LoginLocators
 
 
 class RegisterPage(BasePage):
@@ -22,3 +21,4 @@ class RegisterPage(BasePage):
         self.fill_input(RegisterLocators.PASSWORD_INPUT, password)
         self.click_element(RegisterLocators.REGISTER_BUTTON)
         self.wait_for_element(MainLocators.LOGIN_HEADER)
+
