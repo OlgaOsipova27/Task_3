@@ -1,26 +1,15 @@
 import allure
-import pytest
-from selenium import webdriver
-from selenium.webdriver.support.ui import WebDriverWait
 
-from page_object.base_page import BasePage
+
 from page_object.profile_page import ProfilePage
 from page_object.main_page import MainPage
 from page_object.feed_page import FeedPage
 
-from data.url import URL_BURGER_MAIN, URL_FEED
-from data.user_data import TEST_EMAIL, TEST_PASSWORD
-
-from locators.main_page_locators import MainLocators
-from locators.feed_page_locators import FeedLocators
-from locators.profile_page_locators import ProfileLocators
 
 
 class TestFeed:
-
-    @pytest.fixture(autouse=True)
+#так как тесты используют разные page objects оставила инициализацию отделно для каждого класса тестов (без фикстуры), а не вынесла в conftest
     def setup_pages(self, driver):
-        self.base_page = BasePage(driver)
         self.main_page = MainPage(driver)
         self.feed_page = FeedPage(driver)
         self.profile_page = ProfilePage(driver)

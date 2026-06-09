@@ -9,7 +9,7 @@ from page_object.login_page import LoginPage
 
 class TestPersonalAccount:
 
-    @pytest.fixture(autouse=True)
+#так как тесты используют разные page objects оставила инициализацию отделно для каждого класса тестов (без фикстуры), а не вынесла в conftest
     def setup_pages(self, driver):
         self.main_page = MainPage(driver)
         self.profile_page = ProfilePage(driver)

@@ -8,7 +8,7 @@ from page_object.user_page import UserPage
 
 class TestMainFunctionality:
 
-    @pytest.fixture(autouse=True)
+#так как тесты используют разные page objects оставила инициализацию отделно для каждого класса тестов (без фикстуры), а не вынесла в conftest
     def setup_pages(self, driver):
         self.main_page = MainPage(driver)
         self.feed_page = FeedPage(driver)

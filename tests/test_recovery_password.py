@@ -1,20 +1,11 @@
-import pytest
 import allure
 
-from page_object.base_page import BasePage
 from page_object.recovery_page import RecovPassPage
-from page_object.login_page import LoginPage
-from page_object.main_page import MainPage
-
 
 class TestRecoveryPassword:
-
-    @pytest.fixture(autouse=True)
+#так как тесты используют разные page objects оставила инициализацию отделно для каждого класса тестов (без фикстуры), а не вынесла в conftest
     def setup_pages(self, driver):
-        self.base_page = BasePage(driver)
         self.recovery_page = RecovPassPage(driver)
-        self.login_page = LoginPage(driver)
-        self.main_page = MainPage(driver)
 
     @allure.title('Переход по кнопке "Восстановить пароль" открывает страницу восстановления')
     def test_click_on_button_recovery_password_open_recovery_page(self):
