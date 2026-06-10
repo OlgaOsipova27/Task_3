@@ -8,16 +8,11 @@ from page_object.feed_page import FeedPage
 
 
 class TestFeed:
-#так как тесты используют разные page objects оставила инициализацию отделно для каждого класса тестов (без фикстуры), а не вынесла в conftest
-    def setup_pages(self, driver):
-        self.main_page = MainPage(driver)
-        self.feed_page = FeedPage(driver)
-        self.profile_page = ProfilePage(driver)
-
 
     @allure.title('Если кликнуть на заказ, откроется всплывающее окно с деталями')
-    def test_click_order_opens_modal(self):
-    
+    def test_click_order_opens_modal(self, driver):
+        self.feed_page = FeedPage(driver)
+        
         self.feed_page.open()
         self.feed_page.wait_for_visible_first_order()
         self.feed_page.open_first_order()
@@ -26,7 +21,10 @@ class TestFeed:
         assert self.feed_page.find_order_modal().is_displayed()
 
     @allure.title('Заказы пользователя в истории заказов')
-    def test_user_order_from_history_is_displayed_in_history(self):
+    def test_user_order_from_history_is_displayed_in_history(self, driver):
+        self.main_page = MainPage(driver)
+        self.feed_page = FeedPage(driver)
+        self.profile_page = ProfilePage(driver)
         
         self.main_page.open()
         created_order_number = self.feed_page.create_order_and_get_number()
@@ -37,8 +35,11 @@ class TestFeed:
         
 
     @allure.title('Заказы пользователя из истории отображаются в ленте заказов')
-    def test_user_order_from_history_is_displayed_in_feed(self):
-        
+    def test_user_order_from_history_is_displayed_in_feed(self, driver):
+        self.main_page = MainPage(driver)
+        self.feed_page = FeedPage(driver)
+        self.profile_page = ProfilePage(driver)
+
         self.main_page.open()
         created_order_number = self.feed_page.create_order_and_get_number()
    
@@ -49,7 +50,9 @@ class TestFeed:
 
 
     @allure.title('При создании нового заказа счётчик "Выполнено за всё время" увеличивается')
-    def test_total_done_counter_increases_after_new_order(self):
+    def test_total_done_counter_increases_after_new_order(self, driver):
+        self.main_page = MainPage(driver)
+        self.feed_page = FeedPage(driver)
 
         self.feed_page.open()
 

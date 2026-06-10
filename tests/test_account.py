@@ -1,5 +1,4 @@
 import allure
-import pytest
 
 from page_object.main_page import MainPage
 from page_object.profile_page import ProfilePage
@@ -9,15 +8,14 @@ from page_object.login_page import LoginPage
 
 class TestPersonalAccount:
 
-#так как тесты используют разные page objects оставила инициализацию отделно для каждого класса тестов (без фикстуры), а не вынесла в conftest
-    def setup_pages(self, driver):
+
+    @allure.title('Переход по клику на "Личный кабинет"')
+    def test_click_personal_account_opens_profile(self, driver):
         self.main_page = MainPage(driver)
         self.profile_page = ProfilePage(driver)
         self.user_page = UserPage(driver)
         self.login_page = LoginPage(driver)
 
-    @allure.title('Переход по клику на "Личный кабинет"')
-    def test_click_personal_account_opens_profile(self):
         self.main_page.open()
         user_data = self.user_page.get_test_user_data()
         self.login_page.login(user_data["email"],
@@ -26,7 +24,12 @@ class TestPersonalAccount:
         assert self.profile_page.is_profile_page()
 
     @allure.title('Переход в раздел "История заказов"')
-    def test_click_order_history_opens_history_page(self):
+    def test_click_order_history_opens_history_page(self, driver):
+        self.main_page = MainPage(driver)
+        self.profile_page = ProfilePage(driver)
+        self.user_page = UserPage(driver)
+        self.login_page = LoginPage(driver)
+        
         self.main_page.open()
         user_data = self.user_page.get_test_user_data()
         self.login_page.login(user_data["email"],
@@ -39,7 +42,13 @@ class TestPersonalAccount:
         assert self.profile_page.is_order_history_page()
 
     @allure.title('Выход из аккаунта')
-    def test_logout_from_account(self):
+    def test_logout_from_account(self, driver):
+
+        self.main_page = MainPage(driver)
+        self.profile_page = ProfilePage(driver)
+        self.user_page = UserPage(driver)
+        self.login_page = LoginPage(driver)
+
         self.main_page.open()
         user_data = self.user_page.get_test_user_data()
         self.login_page.login(user_data["email"],

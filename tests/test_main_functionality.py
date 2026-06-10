@@ -8,15 +8,11 @@ from page_object.user_page import UserPage
 
 class TestMainFunctionality:
 
-#так как тесты используют разные page objects оставила инициализацию отделно для каждого класса тестов (без фикстуры), а не вынесла в conftest
-    def setup_pages(self, driver):
-        self.main_page = MainPage(driver)
-        self.feed_page = FeedPage(driver)
-        self.login_page = LoginPage(driver)
-        self.user_page = UserPage(driver)
 
     @allure.title('Переход по клику на «Конструктор»')
-    def test_click_constructor_opens_constructor_page(self):
+    def test_click_constructor_opens_constructor_page(self, driver):
+        self.main_page = MainPage(driver)
+        self.feed_page = FeedPage(driver)
 
         self.feed_page.open()
         self.main_page.open_constructor()
@@ -24,7 +20,9 @@ class TestMainFunctionality:
         assert self.main_page.is_main_page()
 
     @allure.title('Переход по клику на «Лента заказов» c главной страницы')
-    def test_click_feed_opens_feed_page(self):
+    def test_click_feed_opens_feed_page(self, driver):
+        self.main_page = MainPage(driver)
+        self.feed_page = FeedPage(driver)
 
         self.main_page.open()
         self.feed_page.open_from_main_page()
@@ -32,16 +30,18 @@ class TestMainFunctionality:
         assert self.feed_page.is_feed_page()
 
     @allure.title('Клик по ингредиенту открывает модальное окно с деталями')
-    def test_click_ingredient_opens_modal(self):
-        
+    def test_click_ingredient_opens_modal(self, driver):
+        self.main_page = MainPage(driver)
+
         self.main_page.open()
         self.main_page.open_ingredient_details()
         
         assert self.main_page.is_ingredient_modal_displayed()
 
     @allure.title('Модальное окно закрывается по клику на крестик')
-    def test_modal_closes_after_click_close_button(self):
-        
+    def test_modal_closes_after_click_close_button(self, driver):
+        self.main_page = MainPage(driver)
+
         self.main_page.open()
         
         self.main_page.open_ingredient_details()
@@ -50,8 +50,9 @@ class TestMainFunctionality:
         assert self.main_page.is_ingredient_modal_closed()
 
     @allure.title('При добавлении булки в заказ увеличивается каунтер ингредиента')
-    def test_ingredient_counter_increases_after_adding_to_order(self):
-        
+    def test_ingredient_counter_increases_after_adding_to_order(self, driver):
+        self.main_page = MainPage(driver)
+
         self.main_page.open()
         
         before_count = self.main_page.get_bun_counter_value()
@@ -61,8 +62,10 @@ class TestMainFunctionality:
         assert after_count > before_count
 
     @allure.title('Залогиненный пользователь может оформить заказ')
-    def test_authorized_user_can_create_order(self):
-        
+    def test_authorized_user_can_create_order(self, driver):
+        self.main_page = MainPage(driver)
+        self.user_page = UserPage(driver)
+
         self.main_page.open()
         user_data = self.user_page.get_test_user_data()
        
